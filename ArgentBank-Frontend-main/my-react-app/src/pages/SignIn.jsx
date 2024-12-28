@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux"; // Hook pour utiliser dispatch
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/actions"; // Assure-toi d'importer l'action
+import { Navigate } from "react-router-dom"; // Importer Navigate pour rediriger
+
 
 function SignIn() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState(''); // Définir email ici
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [redirect, setRedirect] = useState(false); // Etat pour gérer la redirection
 
-  const dispatch = useDispatch(); // Hook pour accéder au dispatch Redux
+  
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -16,11 +21,17 @@ function SignIn() {
 
     // Appel de l'action loginUser pour la connexion
     try {
-      dispatch(loginUser(username, password)); // Utiliser dispatch pour envoyer l'action
+      await dispatch(loginUser(email, password));
+      setRedirect(true); // Si la connexion réussie, activer la redirection
     } catch (error) {
       setError("Network error: " + error.message);
     }
   };
+
+
+  if (redirect) {
+    return <Navigate to="/user" />; // Rediriger l'utilisateur vers la page "/user"
+  }
 
   return (
     <main className="main bg-dark">
@@ -28,12 +39,12 @@ function SignIn() {
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-wrapper">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Assure-toi de mettre à jour email ici
             />
           </div>
           <div className="input-wrapper">
@@ -42,17 +53,13 @@ function SignIn() {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)} // Assure-toi de mettre à jour password ici
             />
-          </div>
-          <div className="input-remember">
-            <input type="checkbox" id="remember-me" />
-            <label htmlFor="remember-me">Remember me</label>
           </div>
           <button type="submit" className="sign-in-button">
             Sign In
           </button>
-          {error && <p>{error}</p>} {/* Affichage du message d'erreur */}
+          {error && <p>{error}</p>}
         </form>
       </section>
     </main>

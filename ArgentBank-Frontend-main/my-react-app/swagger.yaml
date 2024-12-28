@@ -1,0 +1,126 @@
+swagger: '2.0'
+info:
+  title: Argent Bank API
+  description: API pour la gestion des transactions dans Argent Bank
+  version: "1.0.0"
+
+paths:
+  # Route pour récupérer toutes les transactions
+  /api/v1/transactions:
+    get:
+      summary: "Visualiser toutes les transactions pour un utilisateur."
+      description: "Retourne toutes les transactions du mois en cours pour un utilisateur donné, groupées par compte."
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "L'ID de l'utilisateur"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Transactions récupérées avec succès."
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    transactionId:
+                      type: "string"
+                    amount:
+                      type: "number"
+                    type:
+                      type: "string"
+                    date:
+                      type: "string"
+                    accountId:
+                      type: "string"
+        404:
+          description: "Aucune transaction trouvée."
+
+  # Route pour récupérer les détails d'une transaction spécifique
+  /api/v1/transactions/{transactionId}:
+    get:
+      summary: "Visualiser les détails d'une transaction."
+      description: "Retourne les détails d'une transaction spécifique."
+      parameters:
+        - name: "transactionId"
+          in: "path"
+          description: "L'ID de la transaction"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Transaction trouvée."
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  transactionId:
+                    type: "string"
+                  amount:
+                    type: "number"
+                  type:
+                    type: "string"
+                  date:
+                    type: "string"
+                  accountId:
+                    type: "string"
+        404:
+          description: "Transaction non trouvée."
+
+  # Route pour modifier une transaction
+  /api/v1/transactions/{transactionId}:
+    put:
+      summary: "Modifier les informations d'une transaction."
+      description: "Modifie les informations d'une transaction comme le montant, le type ou la description."
+      parameters:
+        - name: "transactionId"
+          in: "path"
+          description: "L'ID de la transaction"
+          required: true
+          type: "string"
+        - name: "amount"
+          in: "body"
+          description: "Le nouveau montant de la transaction"
+          required: true
+          schema:
+            type: "number"
+        - name: "type"
+          in: "body"
+          description: "Le nouveau type de la transaction (par exemple 'crédit' ou 'débit')"
+          required: false
+          schema:
+            type: "string"
+        - name: "description"
+          in: "body"
+          description: "La nouvelle description de la transaction"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "Transaction mise à jour avec succès."
+        400:
+          description: "Mauvaise requête, vérifiez les données envoyées."
+        404:
+          description: "Transaction non trouvée."
+
+  # Route pour supprimer une transaction
+  /api/v1/transactions/{transactionId}:
+    delete:
+      summary: "Supprimer une transaction."
+      description: "Supprime une transaction spécifique."
+      parameters:
+        - name: "transactionId"
+          in: "path"
+          description: "L'ID de la transaction à supprimer"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Transaction supprimée avec succès."
+        404:
+          description: "Transaction non trouvée."

@@ -2,20 +2,22 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignIn from './pages/SignIn';
 import User from './pages/User';
 import Home from './pages/Home';
-import './css/main.css'
+import Signup from './pages/Signup'; // Importer la page Signup
+import './css/main.css';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 
 function App() {
   return (
     <Router>
-    <Navbar/>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/user" element={<User />} />
+        <Route path="/signup" element={<Signup />} /> {/* Route pour la page d'inscription */}
       </Routes>
-      <Footer/>
+      <Footer />
     </Router>
   );
 }
