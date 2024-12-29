@@ -1,158 +1,139 @@
 swagger: '2.0'
 info:
-  title: Bank Argent API documentation
-  description: Contains all available API endpoints in this codebase
+  title: Argent Bank API
+  description: API pour la gestion des transactions dans Argent Bank
   version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
-host: localhost:3001
-basePath: /api/v1
-schemes:
-  - http
+
 paths:
-  /user/login:
-    post:
-      tags:
-        - User Module
-      summary: Login
-      description: API for Login
-      parameters:
-        - in: body
-          name: body
-          description: Login Payload
-          required: true
-          schema:
-            $ref: '#/definitions/Login'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Login Successfully
-          schema:
-            $ref: '#/definitions/LoginResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-  /user/signup:
-    post:
-      tags:
-        - User Module
-      summary: Signup
-      description: API for Signup
-      parameters:
-        - in: body
-          name: body
-          description: Signup Payload
-          required: true
-          schema:
-            $ref: '#/definitions/User'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Signup Successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-  /user/profile:
+  # Route pour récupérer toutes les transactions d'un utilisateur pour le mois en cours
+  /api/v1/transactions:
     get:
-      security:
-        - Bearer: []
-      tags:
-        - User Module
-      summary: User Profile API
-      description: API for fetching a user profile
-      #produces:
-       # - application/json
-      responses:
-        '200':
-          description: User profile retrieved successully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-    put:
-      security:
-        - Bearer: []
-      tags:
-        - User Module
-      summary: User Profile API
-      description: API for updating a user profile
+      summary: "Récupérer toutes les transactions pour un utilisateur pour le mois en cours"
+      description: "Retourne toutes les transactions pour l'utilisateur, groupées par compte."
       parameters:
-        - in: body
-          name: body
-          description: Update user profile attributes
+        - name: "userId"
+          in: "query"
+          description: "ID de l'utilisateur"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Transactions récupérées avec succès"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    transactionId:
+                      type: "string"
+                    amount:
+                      type: "number"
+                    type:
+                      type: "string"
+                    date:
+                      type: "string"
+                    accountId:
+                      type: "string"
+        400:
+          description: "Requête invalide"
+        401:
+          description: "Non autorisé, token manquant"
+        404:
+          description: "Aucune transaction trouvée"
+        500:
+          description: "Erreur interne du serveur"
+
+  # Route pour récupérer les détails d'une transaction spécifique
+  /api/v1/transactions/{transactionId}:
+    get:
+      summary: "Récupérer les détails d'une transaction"
+      description: "Retourne les détails d'une transaction spécifique."
+      parameters:
+        - name: "transactionId"
+          in: "path"
+          description: "ID de la transaction"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Transaction trouvée avec succès"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  transactionId:
+                    type: "string"
+                  amount:
+                    type: "number"
+                  type:
+                    type: "string"
+                  date:
+                    type: "string"
+                  accountId:
+                    type: "string"
+        404:
+          description: "Transaction non trouvée"
+        500:
+          description: "Erreur interne du serveur"
+
+  # Route pour mettre à jour une transaction
+  /api/v1/transactions/{transactionId}:
+    put:
+      summary: "Mettre à jour une transaction"
+      description: "Permet de modifier des informations sur une transaction, comme le montant ou la description."
+      parameters:
+        - name: "transactionId"
+          in: "path"
+          description: "ID de la transaction"
+          required: true
+          type: "string"
+        - name: "amount"
+          in: "body"
+          description: "Le montant de la transaction"
           required: true
           schema:
-            $ref: '#/definitions/UserProfile'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: User profile retrieved successully
+            type: "number"
+        - name: "type"
+          in: "body"
+          description: "Le type de la transaction (crédit ou débit)"
+          required: false
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
-definitions:
-  User:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-      firstName:
-        type: string
-        description: user first name
-      lastName:
-        type: string
-        description: user last name
-      userName:
-        type: string
-        description: user public name
-  Login:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-  ApiResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: object
-        properties:
-          id:
-            type: string
-          email:
-            type: string
-  LoginResponse:
-    type: object
-    properties:
-      token:
-        type: string
-  UserProfile:
-    type: object
-    properties:
-      userName:
-        type: string
+            type: "string"
+        - name: "description"
+          in: "body"
+          description: "La description de la transaction"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "Transaction mise à jour avec succès"
+        400:
+          description: "Requête invalide, données manquantes ou incorrectes"
+        404:
+          description: "Transaction non trouvée"
+        500:
+          description: "Erreur interne du serveur"
+
+  # Route pour supprimer une transaction (pas nécessaire ici)
+  # Cette route est incluse à titre d'exemple. Dans votre cas, elle ne sera pas utilisée.
+  /api/v1/transactions/{transactionId}:
+    delete:
+      summary: "Supprimer une transaction"
+      description: "Supprime une transaction spécifique. Non utilisée dans ce projet."
+      parameters:
+        - name: "transactionId"
+          in: "path"
+          description: "ID de la transaction à supprimer"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Transaction supprimée avec succès"
+        404:
+          description: "Transaction non trouvée"
+        500:
+          description: "Erreur interne du serveur"

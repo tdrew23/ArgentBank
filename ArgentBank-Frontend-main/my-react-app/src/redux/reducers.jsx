@@ -1,5 +1,5 @@
 const initialState = {
-  token: null, // Token d'authentification
+  token: localStorage.getItem('authToken') || null, // Récupérer le token depuis localStorage si disponible
   userProfile: null, // Données du profil utilisateur
   transactions: [], // Liste des transactions
   error: null, // Message d'erreur en cas de problème
@@ -8,9 +8,11 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
+      // Sauvegarder le token dans localStorage et dans l'état
+      localStorage.setItem('authToken', action.payload.token);
       return {
         ...state,
-        token: action.payload.token, // Sauvegarder le token
+        token: action.payload.token,
         error: null,
       };
     case 'LOGIN_ERROR':
@@ -19,6 +21,8 @@ const authReducer = (state = initialState, action) => {
         error: action.payload, // Afficher les erreurs de connexion
       };
     case 'LOGOUT':
+      // Supprimer le token du localStorage et réinitialiser l'état
+      localStorage.removeItem('authToken');
       return {
         ...state,
         token: null, // Retirer le token lors de la déconnexion

@@ -169,11 +169,11 @@ export const updateUserProfile = (username) => async (dispatch) => {
   }
 };
 
-// actions.js
-// Récupérer toutes les transactions pour un utilisateur
-export const getTransactions = (userId) => async (dispatch) => {
-  const token = localStorage.getItem('authToken'); // Récupérer le token depuis le localStorage
 
+// Action pour récupérer toutes les transactions
+export const getTransactions = (userId) => async (dispatch) => {
+  const token = localStorage.getItem('authToken');
+  
   if (!token) {
     return dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Token is missing' });
   }
@@ -199,7 +199,7 @@ export const getTransactions = (userId) => async (dispatch) => {
   }
 };
 
-// Récupérer les détails d'une transaction spécifique
+// Action pour récupérer les détails d'une transaction
 export const getTransactionDetails = (transactionId) => async (dispatch) => {
   const token = localStorage.getItem('authToken');
 
@@ -228,7 +228,7 @@ export const getTransactionDetails = (transactionId) => async (dispatch) => {
   }
 };
 
-// Mettre à jour une transaction
+// Action pour mettre à jour une transaction
 export const updateTransaction = (transactionId, amount, type, description) => async (dispatch) => {
   const token = localStorage.getItem('authToken');
 
@@ -252,34 +252,6 @@ export const updateTransaction = (transactionId, amount, type, description) => a
     } else {
       const errorData = await response.json();
       dispatch({ type: 'TRANSACTIONS_ERROR', payload: errorData.message || 'Failed to update transaction' });
-    }
-  } catch (error) {
-    dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Network error: ' + error.message });
-  }
-};
-
-// Supprimer une transaction
-export const deleteTransaction = (transactionId) => async (dispatch) => {
-  const token = localStorage.getItem('authToken');
-
-  if (!token) {
-    return dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Token is missing' });
-  }
-
-  try {
-    const response = await fetch(`http://localhost:3001/api/v1/transactions/${transactionId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.ok) {
-      dispatch({ type: 'TRANSACTION_DELETE_SUCCESS', payload: transactionId });
-    } else {
-      const errorData = await response.json();
-      dispatch({ type: 'TRANSACTIONS_ERROR', payload: errorData.message || 'Failed to delete transaction' });
     }
   } catch (error) {
     dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Network error: ' + error.message });

@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Importer useDispatch et useSelector
-import { getUserProfile, updateUserProfile } from '../redux/actions'; // Importer les actions getUserProfile et updateUserProfile
-import { logoutUser } from '../redux/actions'; // Importer l'action logout
-import { useNavigate } from 'react-router-dom'; // Importer useNavigate
-import { getTransactions } from '../redux/actions'; // Importer l'action pour récupérer les transactions
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserProfile, updateUserProfile } from '../redux/actions';
+import { logoutUser } from '../redux/actions';
+import { useNavigate } from 'react-router-dom';
 
 function User() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userProfile, error, token } = useSelector((state) => state.auth); // Accéder à userProfile depuis Redux
+
+  // Accéder aux données depuis Redux
+  const { userProfile, error, token } = useSelector((state) => state.auth);
   const [isEditing, setIsEditing] = useState(false);
-  const [tempUsername, setTempUsername] = useState(''); // Seulement pour username
-  
+  const [tempUsername, setTempUsername] = useState('');
 
   // Vérifier si un utilisateur est authentifié
   useEffect(() => {
@@ -23,6 +22,11 @@ function User() {
     }
   }, [dispatch, token, navigate]);
 
+  // Vérification si l'utilisateur est connecté et que le profil est bien chargé
+  if (!userProfile) {
+    return <p>Loading user profile...</p>; // Afficher un message de chargement si le profil est absent
+  }
+
   // Gérer la déconnexion
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -31,8 +35,7 @@ function User() {
 
   // Sauvegarder les changements du username
   const handleSave = () => {
-    // Appeler l'action pour envoyer les données au backend
-    dispatch(updateUserProfile(tempUsername)); // Envoie le nouveau username
+    dispatch(updateUserProfile(tempUsername)); // Envoie du nouveau username au backend
     setIsEditing(false); // Fermer le mode édition
   };
 
@@ -42,8 +45,9 @@ function User() {
     setIsEditing(false); // Fermer le mode édition
   };
 
+  // Gérer les erreurs
   if (error) {
-    return <p>{error}</p>; // Affichage de l'erreur si le profil n'a pas pu être récupéré
+    return <p>{error}</p>; // Afficher une erreur si elle existe
   }
 
   return (
@@ -51,7 +55,6 @@ function User() {
       <div className="header">
         <h1>Welcome back<br />{userProfile?.userName || 'User'}!</h1>
         <button className="edit-button" onClick={() => setIsEditing(true)}>Edit Name</button>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
 
       {isEditing && (
@@ -65,6 +68,13 @@ function User() {
               onChange={(e) => setTempUsername(e.target.value)}
             />
           </label>
+          <label>
+          First name: {userProfile?.firstName}
+        </label>
+        
+        <label>
+          Last name: {userProfile?.lastName}
+        </label>
           <div className="user-info-buttons">
             <button onClick={handleSave} className="save-button">Save</button>
             <button onClick={handleCancel} className="cancel-button">Cancel</button>
@@ -73,18 +83,56 @@ function User() {
       )}
 
       {/* Informations sur les comptes */}
+      <h2 className="sr-only">Accounts</h2>
       <section className="account">
         <div className="account-content-wrapper">
-          <h3 className="account-title">Argent Bank Checking (x3448)</h3>
-          <p className="account-amount">$48,098.43</p>
-          <p className="account-amount-description">Available balance</p>
+          <h3 className="account-title">Argent Bank Checking (x8349)</h3>
+          <p className="account-amount">$2,082.79</p>
+          <p className="account-amount-description">Available Balance</p>
+        </div>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
+        </div>
+      </section>
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Savings (x6712)</h3>
+          <p className="account-amount">$10,928.42</p>
+          <p className="account-amount-description">Available Balance</p>
+        </div>
+        <div className="account-content-wrapper cta">
+          <button className="transaction-button">View transactions</button>
+        </div>
+      </section>
+      <section className="account">
+        <div className="account-content-wrapper">
+          <h3 className="account-title">Argent Bank Credit Card (x8349)</h3>
+          <p className="account-amount">$184.30</p>
+          <p className="account-amount-description">Current Balance</p>
         </div>
         <div className="account-content-wrapper cta">
           <button className="transaction-button">View transactions</button>
         </div>
       </section>
 
-      
+      {/* Affichage des transactions */}
+      {/* <section className="transactions">
+        <h2>Recent Transactions</h2>
+        {userProfile?.transactions && userProfile.transactions.length > 0 ? (
+          userProfile.transactions.map((transaction) => (
+            <div className="transaction" key={transaction.transactionId}>
+              <p>Date: {transaction.date}</p>
+              <p>Description: {transaction.description}</p>
+              <p>Amount: ${transaction.amount}</p>
+              <p>Balance: ${transaction.balance}</p>
+              <p>Category: {transaction.category}</p>
+              <button>Edit</button> {/* Bouton pour modifier la transaction */}
+            {/* </div> */}
+          {/* ))
+        ) : (
+          <p>No transactions found.</p>
+        )}
+      </section> */} 
     </main>
   );
 }

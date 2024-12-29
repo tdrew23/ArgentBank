@@ -44,7 +44,7 @@ function SignIn() {
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)} // Assure-toi de mettre à jour email ici
+              onChange={(e) => setEmail(e.target.value)} 
             />
           </div>
           <div className="input-wrapper">
@@ -53,7 +53,7 @@ function SignIn() {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // Assure-toi de mettre à jour password ici
+              onChange={(e) => setPassword(e.target.value)} 
             />
           </div>
           <button type="submit" className="sign-in-button">
