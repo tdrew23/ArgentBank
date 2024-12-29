@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './reducers'; // Assurez-vous que le chemin d'importation est correct
+import authReducer from './reducers'; //
 
 // Créez le store avec un seul reducer
 const store = configureStore({

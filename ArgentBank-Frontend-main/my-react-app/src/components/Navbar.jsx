@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'; // Pour accéder au store Redux
 import { logoutUser } from '../redux/actions'; // L'action de déconnexion
-import logo from '../images/argentBankLogo.png';
+import logo from '../images/argentBankLogo.webp';
 
 function Navbar() {
   const dispatch = useDispatch();
