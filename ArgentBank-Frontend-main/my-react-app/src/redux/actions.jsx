@@ -47,6 +47,7 @@ export const loginUser = (email, password) => async (dispatch) => {
   }
 };
 
+
 // Action pour inscrire un nouvel utilisateur
 export const signupUser = (email, password, firstName, lastName, userName) => async (dispatch) => {
   try {
@@ -169,94 +170,6 @@ export const updateUserProfile = (username) => async (dispatch) => {
   }
 };
 
-
-// Action pour récupérer toutes les transactions
-export const getTransactions = (userId) => async (dispatch) => {
-  const token = localStorage.getItem('authToken');
-  
-  if (!token) {
-    return dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Token is missing' });
-  }
-
-  try {
-    const response = await fetch(`http://localhost:3001/api/v1/transactions?userId=${userId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      dispatch({ type: 'TRANSACTIONS_SUCCESS', payload: data });
-    } else {
-      const errorData = await response.json();
-      dispatch({ type: 'TRANSACTIONS_ERROR', payload: errorData.message || 'Failed to fetch transactions' });
-    }
-  } catch (error) {
-    dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Network error: ' + error.message });
-  }
-};
-
-// Action pour récupérer les détails d'une transaction
-export const getTransactionDetails = (transactionId) => async (dispatch) => {
-  const token = localStorage.getItem('authToken');
-
-  if (!token) {
-    return dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Token is missing' });
-  }
-
-  try {
-    const response = await fetch(`http://localhost:3001/api/v1/transactions/${transactionId}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      dispatch({ type: 'TRANSACTION_DETAILS_SUCCESS', payload: data });
-    } else {
-      const errorData = await response.json();
-      dispatch({ type: 'TRANSACTIONS_ERROR', payload: errorData.message || 'Failed to fetch transaction details' });
-    }
-  } catch (error) {
-    dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Network error: ' + error.message });
-  }
-};
-
-// Action pour mettre à jour une transaction
-export const updateTransaction = (transactionId, amount, type, description) => async (dispatch) => {
-  const token = localStorage.getItem('authToken');
-
-  if (!token) {
-    return dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Token is missing' });
-  }
-
-  try {
-    const response = await fetch(`http://localhost:3001/api/v1/transactions/${transactionId}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ amount, type, description }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      dispatch({ type: 'TRANSACTION_UPDATE_SUCCESS', payload: data });
-    } else {
-      const errorData = await response.json();
-      dispatch({ type: 'TRANSACTIONS_ERROR', payload: errorData.message || 'Failed to update transaction' });
-    }
-  } catch (error) {
-    dispatch({ type: 'TRANSACTIONS_ERROR', payload: 'Network error: ' + error.message });
-  }
-};
 
 
 

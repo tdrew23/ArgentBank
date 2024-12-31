@@ -1,7 +1,23 @@
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {  useEffect } from 'react';
+
+
 
 function UserProfile() {
-  const { userProfile } = useSelector(state => state.auth); // Récupérer le profil utilisateur
+  const { userProfile, token } = useSelector(state => state.auth); // Récupérer le profil utilisateur
+
+  const navigate = useNavigate();
+
+  
+    // Vérifier si un utilisateur est authentifié
+    useEffect(() => {
+      if (!token) {
+        navigate('/'); // Si pas de token, rediriger vers la page de connexion
+      } 
+      
+    }, [ token, navigate]);
+
 
   return (
     <div className="user-profile">

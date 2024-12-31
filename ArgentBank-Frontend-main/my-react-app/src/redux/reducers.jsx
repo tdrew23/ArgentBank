@@ -1,7 +1,8 @@
+
+
 const initialState = {
   token: localStorage.getItem('authToken') || null, // Récupérer le token depuis localStorage si disponible
   userProfile: null, // Données du profil utilisateur
-  transactions: [], // Liste des transactions
   error: null, // Message d'erreur en cas de problème
 };
 
@@ -39,16 +40,6 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         error: action.payload, // Afficher les erreurs liées au profil
-      };
-    case 'TRANSACTIONS_SUCCESS':
-      return {
-        ...state,
-        transactions: action.payload, // Sauvegarder les transactions récupérées
-      };
-    case 'TRANSACTIONS_ERROR':
-      return {
-        ...state,
-        error: action.payload, // Afficher les erreurs liées aux transactions
       };
     default:
       return state;

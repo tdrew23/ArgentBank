@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux"; // Importer useDispatch pour envoyer l'action
 import { signupUser } from "../redux/actions"; // Importer l'action signupUser
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
 
 function Signup() {
+  const { userProfile, error, token } = useSelector((state) => state.auth);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -11,6 +15,19 @@ function Signup() {
   const [error, setError] = useState("");
   
   const dispatch = useDispatch(); // Hook pour envoyer l'action
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      if (!token) {
+        navigate('/'); // Si pas de token, rediriger vers la page de connexion
+      } })
+
+
+    // Gérer la déconnexion
+    const handleLogout = () => {
+      dispatch(logoutUser());
+      navigate('/'); // Rediriger vers la page de connexion après déconnexion
+    };
 
   // Gérer l'envoi du formulaire
   const handleSubmit = (e) => {
